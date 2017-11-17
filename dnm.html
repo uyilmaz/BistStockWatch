@@ -1,0 +1,93 @@
+﻿<html>
+<head>
+<script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+</head>
+<body>
+
+<style type="text/css">
+	.tg th {
+		text-decoration: underline;
+	}
+</style>
+
+<pre>
+<code>
+	<table class="tg" id="tbl" cellpadding="6">
+	  <tr>
+		<th class="tg-yw4l">HISSE</th>
+		<th class="tg-yw4l">EN SON</th>
+		<th class="tg-yw4l">DEGISIM</th>
+		<th class="tg-yw4l">ADET</th>
+		<th class="tg-yw4l">SU ANKI DEGER</th>
+		<th class="tg-yw4l">ALINAN DEGER</th>
+	  </tr>
+	  
+	</table>
+	
+	<p> 
+		<u>Toplam: </u><br>
+		Alinan deger: <span id="totalBuy"></span> <br>
+		Su anki deger: <span id="totalCurrent"></span> <br>
+		Degisim: <span id="totalChange"></span> <br>
+	</p>
+</code>
+</pre>
+
+<script>
+	
+var apiUrl = "https://www.doviz.com/api/v1/stocks/STOCK_NAME/latest";
+
+var templateStr = 
+	"<tr>"
+	+	"<td class='tg-yw4l'>HEADER</td>"
+	+	"<td class='tg-yw4l'>LATEST</td>"
+	+	"<td class='tg-yw4l'>CHANGE_RATE%</td>"
+	+	"<td class='tg-yw4l'>_ADET_</td>"
+	+	"<td class='tg-yw4l'>_CURRENT_VAL_</td>"
+	+	"<td class='tg-yw4l'>_BUY_VALUE_</td>"
+	+	"</tr>";
+
+window.totalBuy = 0;
+window.totalCurrent = 0;
+window.totalChange = 0;
+	
+var outputResult = function(adet, alinanDeger, header, data) {
+	var buyValue = (alinanDeger * adet).toFixed(0);
+	var currValue = (data.latest * adet).toFixed(0);
+	
+	$("#tbl").append(
+		templateStr
+			.replace("_ADET_", adet)
+			.replace("_CURRENT_VAL_", currValue)
+			.replace("_BUY_VALUE_", buyValue)
+			.replace("LATEST", data.latest)
+			.replace("CHANGE_RATE", data.change_rate)
+			.replace("HEADER", header)
+			);
+	
+	window.totalBuy += parseInt(buyValue);
+	window.totalCurrent += parseInt(currValue);
+	window.totalChange = parseInt(window.totalCurrent - window.totalBuy);
+	
+	$("#totalBuy").text(window.totalBuy);
+	$("#totalCurrent").text(window.totalCurrent);
+	$("#totalChange").text(window.totalChange);
+};
+	
+$.getJSON( apiUrl.replace("STOCK_NAME", "ASELS"), function( data ) {
+	$.getJSON( apiUrl.replace("STOCK_NAME", "HALKB"), function( data ) {
+		$.getJSON( apiUrl.replace("STOCK_NAME", "KARSN"), function( data ) {
+			outputResult(1635, 1.83, "KARSN", data)
+		});
+		outputResult(270, 10.93, "HALKB", data)
+	});
+	outputResult(317, 26.19, "ASELS", data)
+});
+
+</script>
+
+</body>
+</html>
