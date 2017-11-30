@@ -11,8 +11,22 @@
  integrity="sha256-DYyWoZ81AkDpPAJcZqoKFkhTnt5EV74MlgFi8yEr0lc="
  crossorigin="anonymous"></script>
  
+ <style>
+ 
+	 .darkTheme {
+		background-color: black;
+		color: gray;
+	 }
+	 
+	 .lightTheme {
+		background-color: initial;
+		color: initial;
+	 }
+ 
+ </style>
+ 
 </head>
-<body>
+<body class="darkTheme">
 
 <style type="text/css">
 	.tg th {
@@ -39,6 +53,7 @@
 		<th class="tg-yw4l">HISSE</th>
 		<th class="tg-yw4l">EN SON</th>
 		<th class="tg-yw4l">DEGISIM %</th>
+		<th class="tg-yw4l">MALIYET</th>
 		<th class="tg-yw4l">ADET</th>
 		<th class="tg-yw4l">SU ANKI DEGER</th>
 		<th class="tg-yw4l">ALINAN DEGER</th>
@@ -66,6 +81,7 @@ var templateStr =
 	+	"<td class='tg-yw4l'>HEADER</td>"
 	+	"<td class='tg-yw4l'>LATEST</td>"
 	+	"<td class='tg-yw4l'>CHANGE_RATE%</td>"
+	+	"<td class='tg-yw4l'>MALIYET</td>"
 	+	"<td class='tg-yw4l'>_ADET_</td>"
 	+	"<td class='tg-yw4l'>_CURRENT_VAL_</td>"
 	+	"<td class='tg-yw4l'>_BUY_VALUE_</td>"
@@ -86,6 +102,7 @@ var changeCls = function(changeAmount) {
 var outputResult = function(adet, alinanDeger, header, data) {
 	var buyValue = (alinanDeger * adet).toFixed(0);
 	var currValue = (data.latest * adet).toFixed(0);
+	var maliyet = (buyValue / adet).toFixed(2);
 	
 	$("#tbl").append(
 		templateStr
@@ -94,6 +111,7 @@ var outputResult = function(adet, alinanDeger, header, data) {
 			.replace("_BUY_VALUE_", buyValue)
 			.replace("LATEST", data.latest)
 			.replace("CHANGE_RATE", data.change_rate)
+			.replace("MALIYET", maliyet)
 			.replace("HEADER", header)
 			.replace("_CHANGE_VALUE_", currValue - buyValue)
 			.replace("_CHANGE_CLS_", changeCls(currValue - buyValue))
