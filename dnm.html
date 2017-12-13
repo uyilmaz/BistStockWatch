@@ -75,6 +75,7 @@
 <script>
 	
 var apiUrl = "https://www.doviz.com/api/v1/stocks/STOCK_NAME/latest";
+var altinUrl = "https://www.doviz.com/api/v1/golds/gram-altin/latest";
 
 var templateStr = 
 	"<tr>"
@@ -130,11 +131,15 @@ var outputResult = function(adet, alinanDeger, header, data) {
 $.getJSON( apiUrl.replace("STOCK_NAME", "ASELS"), function( data ) {
 	$.getJSON( apiUrl.replace("STOCK_NAME", "HALKB"), function( data ) {
 		$.getJSON( apiUrl.replace("STOCK_NAME", "KARSN"), function( data ) {
-			outputResult(1635, 1.83, "KARSN", data)
+			outputResult(1635, 1.83, "KARSN", data);
+			$.getJSON("https://www.doviz.com/api/v1/golds/gram-altin/latest", function(data) {
+				data.latest = data.buying;
+				outputResult(129.95, 153.9,"ALTIN",data);
+			});
 		});
-		outputResult(505, 9.87, "HALKB", data)
+		outputResult(505, 9.87, "HALKB", data);
 	});
-	outputResult(397, 27.57, "ASELS", data)
+	outputResult(397, 27.57, "ASELS", data);
 });
 
 </script>
