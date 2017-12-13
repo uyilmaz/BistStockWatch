@@ -73,7 +73,11 @@
 </pre>
 
 <script>
-	
+
+Number.prototype.round = function round(decimals) {
+  return Number(Math.round(this+'e'+decimals)+'e-'+decimals);
+};
+
 var apiUrl = "https://www.doviz.com/api/v1/stocks/STOCK_NAME/latest";
 var altinUrl = "https://www.doviz.com/api/v1/golds/gram-altin/latest";
 
@@ -101,17 +105,17 @@ var changeCls = function(changeAmount) {
 }
 
 var outputResult = function(adet, alinanDeger, header, data) {
-	var buyValue = (alinanDeger * adet).toFixed(0);
-	var currValue = (data.latest * adet).toFixed(0);
-	var maliyet = (buyValue / adet).toFixed(2);
+	var buyValue = (alinanDeger * adet).round(0);
+	var currValue = (data.latest * adet).round(0);
+	var maliyet = (buyValue / adet).round(2);
 	
 	$("#tbl").append(
 		templateStr
 			.replace("_ADET_", adet)
 			.replace("_CURRENT_VAL_", currValue)
 			.replace("_BUY_VALUE_", buyValue)
-			.replace("LATEST", data.latest)
-			.replace("CHANGE_RATE", data.change_rate)
+			.replace("LATEST", data.latest.round(2))
+			.replace("CHANGE_RATE", data.change_rate.round(2))
 			.replace("MALIYET", maliyet)
 			.replace("HEADER", header)
 			.replace("_CHANGE_VALUE_", currValue - buyValue)
