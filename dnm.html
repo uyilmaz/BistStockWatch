@@ -118,7 +118,7 @@ var outputResult = function(adet, alinanDeger, header, data) {
 			.replace("CHANGE_RATE", data.change_rate.round(2))
 			.replace("MALIYET", maliyet)
 			.replace("HEADER", header)
-			.replace("_CHANGE_VALUE_", currValue - buyValue)
+			.replace("_CHANGE_VALUE_", header === "ALTIN" ? currValue - buyValue - 148 : currValue - buyValue)
 			.replace("_CHANGE_CLS_", changeCls(currValue - buyValue))
 			.replace("_UPDATE_DATE_", moment(new Date(data.update_date * 1000)).format('MMM DD HH:mm'))
 			);
