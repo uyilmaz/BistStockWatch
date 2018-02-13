@@ -52,7 +52,7 @@
 	  <tr>
 		<th class="tg-yw4l">HISSE</th>
 		<th class="tg-yw4l">EN SON</th>
-		<th class="tg-yw4l">DEGISIM %</th>
+		<th class="tg-yw4l">GUNLUK <br> DEGISIM %</th>
 		<th class="tg-yw4l">MALIYET</th>
 		<th class="tg-yw4l">ADET</th>
 		<th class="tg-yw4l">SU ANKI DEGER</th>
@@ -104,7 +104,7 @@ var changeCls = function(changeAmount) {
 	return "";
 }
 
-var outputResult = function(adet, alinanDeger, header, data) {
+var outputResult = function(adet, alinanDeger, header, data, passive) {
 	var buyValue = (alinanDeger * adet).round(0);
 	var currValue = (data.latest * adet).round(0);
 	var maliyet = (buyValue / adet).round(2);
@@ -123,30 +123,127 @@ var outputResult = function(adet, alinanDeger, header, data) {
 			.replace("_UPDATE_DATE_", moment(new Date(data.update_date * 1000)).format('MMM DD HH:mm'))
 			);
 	
-	window.totalBuy += parseInt(buyValue);
-	window.totalCurrent += parseInt(currValue);
-	window.totalChange = parseInt(window.totalCurrent - window.totalBuy);
-	
-	$("#totalBuy").text(window.totalBuy);
-	$("#totalCurrent").text(window.totalCurrent);
-	$("#totalChange").text(window.totalChange);
+	if(!passive) {
+		window.totalBuy += parseInt(buyValue);
+		window.totalCurrent += parseInt(currValue);
+		window.totalChange = parseInt(window.totalCurrent - window.totalBuy);
+		
+		$("#totalBuy").text(window.totalBuy);
+		$("#totalCurrent").text(window.totalCurrent);
+		$("#totalChange").text(window.totalChange);
+	}
 };
-	
-$.getJSON( apiUrl.replace("STOCK_NAME", "ASELS"), function( data ) {
+
+//global
+var stocks = [
+	{name: "ASELS", quantity: 397, cost: 27.55},
+	{name: "HALKB", quantity: 505, cost: 9.87},
+	{name: "KARSN", quantity: 1635, cost: 1.83},
+	{name: "ENJSA", quantity: 30, cost: 6.25},
+	{name: "ETYAT", quantity: 300, cost: 1.01},
+	{name: "TMPOL", quantity: 250, cost: 4.42}
+];
+
+stocks.forEach(function(stock, e) {
+	$.getJSON(apiUrl.replace("STOCK_NAME", stock.name), function( data ) {
+		stock.data = data;
+		outputResult(stock.quantity, stock.cost, stock.name, stock.data);
+		
+		if(e == (stocks.length-1) ) sortTable("tbl", 0);
+	});
+});
+
+/* var stockCount = 6;
+var count = 1;
+
+for(var i = 1; i<=stockCount;i++) {
+	$.getJSON(apiUrl.replace("STOCK_NAME", stocks[i].name), function( data ) {
+		
+		stocks[i].data = data;
+		count++;
+		if(count == stockCount) {
+			for(var b = 0; b<stockCount;b++) {
+				outputResult(stocks[b].quantity, stocks[b].cost, stocks[b].name, stocks[b].data);
+			}
+		}
+	});
+}
+
+/* $.getJSON( apiUrl.replace("STOCK_NAME", "ASELS"), function( data ) {
 	$.getJSON( apiUrl.replace("STOCK_NAME", "HALKB"), function( data ) {
 		$.getJSON( apiUrl.replace("STOCK_NAME", "KARSN"), function( data ) {
 			outputResult(1635, 1.83, "KARSN", data);
 			$.getJSON("https://www.doviz.com/api/v1/golds/gram-altin/latest", function(data) {
 				data.latest = data.buying;
 				outputResult(129.95, 153.9,"ALTIN",data);
+				$.getJSON( apiUrl.replace("STOCK_NAME", "KARSN"), function( data ) {
+					outputResult(129.95, 153.9,"ALTIN",data);
+				});
 			});
 		});
 		outputResult(505, 9.87, "HALKB", data);
 	});
 	outputResult(397, 27.57, "ASELS", data);
-});
+}); */
 
 </script>
 
+<script>
+//copied from https://www.w3schools.com/howto/howto_js_sort_table.asp
+function sortTable(tableId, n) {
+  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+  table = document.getElementById(tableId);
+  switching = true;
+  // Set the sorting direction to ascending:
+  dir = "asc"; 
+  /* Make a loop that will continue until
+  no switching has been done: */
+  while (switching) {
+    // Start by saying: no switching is done:
+    switching = false;
+    rows = table.getElementsByTagName("TR");
+    /* Loop through all table rows (except the
+    first, which contains table headers): */
+    for (i = 1; i < (rows.length - 1); i++) {
+      // Start by saying there should be no switching:
+      shouldSwitch = false;
+      /* Get the two elements you want to compare,
+      one from current row and one from the next: */
+      x = rows[i].getElementsByTagName("TD")[n];
+      y = rows[i + 1].getElementsByTagName("TD")[n];
+      /* Check if the two rows should switch place,
+      based on the direction, asc or desc: */
+      if (dir == "asc") {
+        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+          // If so, mark as a switch and break the loop:
+          shouldSwitch= true;
+          break;
+        }
+      } else if (dir == "desc") {
+        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+          // If so, mark as a switch and break the loop:
+          shouldSwitch= true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      /* If a switch has been marked, make the switch
+      and mark that a switch has been done: */
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      // Each time a switch is done, increase this count by 1:
+      switchcount ++; 
+    } else {
+      /* If no switching has been done AND the direction is "asc",
+      set the direction to "desc" and run the while loop again. */
+      if (switchcount == 0 && dir == "asc") {
+        dir = "desc";
+        switching = true;
+      }
+    }
+  }
+}
+</script
 </body>
 </html>
