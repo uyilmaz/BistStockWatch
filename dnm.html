@@ -82,7 +82,7 @@ var apiUrl = "https://www.doviz.com/api/v1/stocks/STOCK_NAME/latest";
 var altinUrl = "https://www.doviz.com/api/v1/golds/gram-altin/latest";
 
 var templateStr = 
-	"<tr>"
+	"<tr style='_STYLEPH_'>"
 	+	"<td class='tg-yw4l'>HEADER</td>"
 	+	"<td class='tg-yw4l'>LATEST</td>"
 	+	"<td class='tg-yw4l'>CHANGE_RATE%</td>"
@@ -121,6 +121,7 @@ var outputResult = function(adet, alinanDeger, header, data, passive) {
 			.replace("_CHANGE_VALUE_", header === "ALTIN" ? currValue - buyValue - 148 : currValue - buyValue)
 			.replace("_CHANGE_CLS_", changeCls(currValue - buyValue))
 			.replace("_UPDATE_DATE_", moment(new Date(data.update_date * 1000)).format('MMM DD HH:mm'))
+			.replace("_STYLEPH_", passive ? "text-decoration: line-through;" : "")
 			);
 	
 	if(!passive) {
@@ -138,7 +139,7 @@ var outputResult = function(adet, alinanDeger, header, data, passive) {
 var stocks = [
 	{name: "ASELS", quantity: 397, cost: 27.55},
 	{name: "HALKB", quantity: 505, cost: 9.87},
-	{name: "KARSN", quantity: 1635, cost: 1.83},
+	{name: "KARSN", quantity: 1635, cost: 1.83, passive: true},
 	{name: "ENJSA", quantity: 30, cost: 6.25},
 	{name: "ETYAT", quantity: 300, cost: 1.01},
 	{name: "TMPOL", quantity: 250, cost: 4.42}
@@ -147,45 +148,11 @@ var stocks = [
 stocks.forEach(function(stock, e) {
 	$.getJSON(apiUrl.replace("STOCK_NAME", stock.name), function( data ) {
 		stock.data = data;
-		outputResult(stock.quantity, stock.cost, stock.name, stock.data);
+		outputResult(stock.quantity, stock.cost, stock.name, stock.data, stock.passive);
 		
 		if(e == (stocks.length-1) ) sortTable("tbl", 0);
 	});
 });
-
-/* var stockCount = 6;
-var count = 1;
-
-for(var i = 1; i<=stockCount;i++) {
-	$.getJSON(apiUrl.replace("STOCK_NAME", stocks[i].name), function( data ) {
-		
-		stocks[i].data = data;
-		count++;
-		if(count == stockCount) {
-			for(var b = 0; b<stockCount;b++) {
-				outputResult(stocks[b].quantity, stocks[b].cost, stocks[b].name, stocks[b].data);
-			}
-		}
-	});
-}
-
-/* $.getJSON( apiUrl.replace("STOCK_NAME", "ASELS"), function( data ) {
-	$.getJSON( apiUrl.replace("STOCK_NAME", "HALKB"), function( data ) {
-		$.getJSON( apiUrl.replace("STOCK_NAME", "KARSN"), function( data ) {
-			outputResult(1635, 1.83, "KARSN", data);
-			$.getJSON("https://www.doviz.com/api/v1/golds/gram-altin/latest", function(data) {
-				data.latest = data.buying;
-				outputResult(129.95, 153.9,"ALTIN",data);
-				$.getJSON( apiUrl.replace("STOCK_NAME", "KARSN"), function( data ) {
-					outputResult(129.95, 153.9,"ALTIN",data);
-				});
-			});
-		});
-		outputResult(505, 9.87, "HALKB", data);
-	});
-	outputResult(397, 27.57, "ASELS", data);
-}); */
-
 </script>
 
 <script>
@@ -244,6 +211,6 @@ function sortTable(tableId, n) {
     }
   }
 }
-</script
+</script>
 </body>
 </html>
