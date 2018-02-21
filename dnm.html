@@ -78,8 +78,8 @@ Number.prototype.round = function round(decimals) {
   return Number(Math.round(this+'e'+decimals)+'e-'+decimals);
 };
 
-var apiUrl = "https://www.doviz.com/api/v1/stocks/STOCK_NAME/latest";
-var altinUrl = "https://www.doviz.com/api/v1/golds/gram-altin/latest";
+var apiUrl = 'dnmService.php?url=https%3A%2F%2Fwww.doviz.com%2Fapi%2Fv1%2Fstocks%2FSTOCK_NAME%2Flatest';
+var altinUrl = "dnmService.php?url=https://www.doviz.com/api/v1/golds/gram-altin/latest";
 
 var templateStr = 
 	"<tr style='_STYLEPH_'>"
@@ -142,7 +142,8 @@ var stocks = [
 	{name: "KARSN", quantity: 1635, cost: 1.83, passive: true},
 	{name: "ENJSA", quantity: 30, cost: 6.25},
 	{name: "ETYAT", quantity: 300, cost: 1.01},
-	{name: "TMPOL", quantity: 250, cost: 4.42}
+	{name: "TMPOL", quantity: 250, cost: 4.42},
+	{name: "CEMTS", quantity: 769, cost: 4.55}
 ];
 
 stocks.forEach(function(stock, e) {
